@@ -4,7 +4,7 @@
   "description": "Never miss a thing in Life. Take notes quickly. Organize and keep track of all your notes.",
   "main": "json_server.js",
   "scripts": {
-    "start": "json_server.js"
+    "start": "node json_server.js"
   },
   "keywords": [
     "Express",

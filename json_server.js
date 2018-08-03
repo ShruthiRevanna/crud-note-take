@@ -1,8 +1,39 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const bodyParser = require('body-parser');
 
-app.get('/', (req, res) => res.send('Hello World!'))
+// create express app
+const app = express();
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
 
-console.log('Server running at http://127.0.0.1:3000/');
+// parse requests of content-type - application/json
+app.use(bodyParser.json())
+
+// Configuring the database
+const dbConfig = require('./config/database.config.js');
+const mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
+
+// Connecting to the database
+mongoose.connect(dbConfig.url)
+    .then(() => {
+        console.log("Successfully connected to the database");
+    }).catch(err => {
+    console.log('Could not connect to the database. Exiting now...');
+    process.exit();
+});
+
+// define a simple route
+app.get('/', (req, res) => {
+    res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
+});
+
+require('./app/routes/note.route.js')(app);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+    //console.log('Server running at http://127.0.0.1:3000/');
+});
